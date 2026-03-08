@@ -189,6 +189,10 @@ export function installSecurityMiddleware(app: Express): void {
   });
 
   app.use((req: Request, res: Response, next: NextFunction) => {
+    // Skip CORS check for static assets
+    if (req.path.startsWith('/assets/') || req.path.endsWith('.css') || req.path.endsWith('.js') || req.path.endsWith('.svg') || req.path.endsWith('.png')) {
+      return next();
+    }
     corsMiddleware(req, res, (err) => {
       if (err) {
         return res.status(403).json({ error: "origin_not_allowed" });
